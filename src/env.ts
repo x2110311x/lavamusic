@@ -75,6 +75,8 @@ const envSchema = z.object({
 		z.array(LavalinkNodeSchema),
 	),
 	GENIUS_API: z.string().optional(),
+	UseMessgeContentsIntent: z.preprocess((val) => val === "true", z.boolean().default(true)),
+
 });
 
 type Env = z.infer<typeof envSchema>;

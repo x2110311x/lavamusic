@@ -7,7 +7,12 @@ const { MessageContent, GuildVoiceStates, GuildMessages, Guilds } = GatewayInten
 
 export async function launch() {
 	const clientOptions: ClientOptions = {
-		intents: [Guilds, GuildMessages, MessageContent, GuildVoiceStates],
+		intents: [
+			Guilds,
+			GuildMessages,
+			...(env.UseMessgeContentsIntent ? [MessageContent] : []),
+			GuildVoiceStates,
+		],
 		allowedMentions: { parse: ["users", "roles"], repliedUser: false },
 		makeCache: Options.cacheWithLimits({
 			...Options.DefaultMakeCacheSettings,
