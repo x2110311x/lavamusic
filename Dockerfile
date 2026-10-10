@@ -20,6 +20,7 @@ COPY --from=builder --chown=bun:bun /app/locales ./locales
 COPY --from=builder --chown=bun:bun /app/package.prod.json ./package.json
 COPY --from=builder --chown=bun:bun /app/drizzle ./drizzle
 COPY --from=builder --chown=bun:bun /app/drizzle.config.ts /app/drizzle.config.sqlite.ts ./
+COPY --from=builder --chown=bun:bun /app/scripts/migrate.ts ./scripts/migrate.ts
 COPY --from=builder --chown=bun:bun /app/src/env.ts ./src/env.ts
 COPY --from=builder --chown=bun:bun /app/src/database/schemas.ts /app/src/database/schemas.sqlite.ts ./src/database/
 
@@ -34,7 +35,7 @@ RUN apk add --no-cache su-exec &&\
   # Cleanup
   bunx clean-modules "**/*.d.ts" "**/@types/**" "**/*.map" "**/test/**" "**/tests/**" -y &&\
   rm -rf ~/.bun /tmp /var/cache/apk /lib/apk/db\
-  /app/node_modules/@esbuild* /app/node_modules/.bin/esbuild /app/node_modules/@libsql/linux-arm64-gnu
+  /app/node_modules/@libsql/linux-arm64-gnu
 
 COPY --chown=bun:bun entrypoint.sh ./entrypoint.sh
 RUN chmod +x ./entrypoint.sh

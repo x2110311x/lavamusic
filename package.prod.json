@@ -4,12 +4,12 @@
   "scripts": {
     "start": "bun run dist/index.js",
 
-    "db:push": "drizzle-kit migrate --config=drizzle.config.ts",
+    "db:push": "bun run scripts/migrate.ts",
     "db:drop": "drizzle-kit drop --config=drizzle.config.ts",
     "db:generate": "drizzle-kit generate --config=drizzle.config.ts",
     "db:studio": "drizzle-kit studio --config=drizzle.config.ts",
 
-    "db:push:sqlite": "drizzle-kit migrate --config=drizzle.config.sqlite.ts",
+    "db:push:sqlite": "bun run scripts/migrate.ts",
     "db:drop:sqlite": "drizzle-kit drop --config=drizzle.config.sqlite.ts",
     "db:generate:sqlite": "drizzle-kit generate --config=drizzle.config.sqlite.ts",
     "db:studio:sqlite": "drizzle-kit studio --config=drizzle.config.sqlite.ts"

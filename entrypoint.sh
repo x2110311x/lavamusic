@@ -1,8 +1,10 @@
 #!/bin/sh
 set -e
 
-echo "🔒 Fixing permissions for /app..."
-chown -R bun:bun /app
+echo "🔒 Fixing permissions for data..."
+[ -e /app/lavamusic.db ] && chown bun:bun /app/lavamusic.db || true
+[ -d /app/lavamusic-pgdata ] && chown -R bun:bun /app/lavamusic-pgdata || true
+[ -d /app/data ] && chown -R bun:bun /app/data || true
 
 echo "🚀 Starting Lavamusic container..."
 

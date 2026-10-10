@@ -1,16 +1,15 @@
 import type { Config } from "drizzle-kit";
-import { env } from "./src/env";
 
-if (!env.DATABASE_URL) env.DATABASE_URL = "file:./lavamusic-pgdata";
-
+const rawUrl = process.env.DATABASE_URL || "./lavamusic-pgdata";
 const isPgLite =
-	!env.DATABASE_URL.startsWith("postgres://") && !env.DATABASE_URL.startsWith("postgresql://");
+	!rawUrl.startsWith("postgres://") && !rawUrl.startsWith("postgresql://");
+const dbUrl = isPgLite ? rawUrl.replace(/^file:/, "") : rawUrl;
 
 const config: Config = {
 	out: "./drizzle/postgres",
 	schema: "./src/database/schemas.ts",
 	dialect: "postgresql",
-	dbCredentials: { url: env.DATABASE_URL },
+	dbCredentials: { url: dbUrl },
 };
 
 // Only add driver for PGLite
