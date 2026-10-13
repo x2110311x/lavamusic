@@ -1,4 +1,4 @@
-import { ChannelType, type TextChannel } from "discord.js";
+import { ApplicationCommandOptionType, ChannelType, type TextChannel } from "discord.js";
 import { env } from "../../env";
 import { I18N } from "../../structures/I18n";
 import { Command, type Context, type Lavamusic } from "../../structures/index";
@@ -28,13 +28,25 @@ export default class GuildLeave extends Command {
 				client: [SendMessages, ReadMessageHistory, ViewChannel, EmbedLinks],
 				user: [],
 			},
-			slashCommand: false,
-			options: [],
+			slashCommand: true,
+			options: [
+				{
+					name: "guild",
+					description: I18N.dev.guilds.options.guild,
+					type: ApplicationCommandOptionType.String,
+					required: true,
+				},
+			],
 		});
 	}
 
 	public async run(client: Lavamusic, ctx: Context, args: string[]): Promise<any> {
-		const guildId = args[0];
+		const guildId =
+			(ctx.isInteraction ? (ctx.options.get("guild")?.value as string) : undefined) || args[0];
+
+		if (!guildId) {
+			return await ctx.sendMessage(ctx.locale(I18N.dev.guilds.not_found));
+		}
 
 		const guild = await client.shard
 			?.broadcastEval(

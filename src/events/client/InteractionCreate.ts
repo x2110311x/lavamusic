@@ -120,9 +120,14 @@ export default class InteractionCreate extends Event {
 					return;
 				}
 
-				if (command.permissions?.dev && this.client.env.OWNER_IDS) {
-					const isDev = this.client.env.OWNER_IDS.includes(interaction.user.id);
-					if (!isDev) return;
+				if (command.permissions?.dev) {
+					const isDev = this.client.env.OWNER_IDS?.includes(interaction.user.id);
+					if (!isDev) {
+						return await interaction.reply({
+							content: t(I18N.common.errors.no_permissions),
+							flags: MessageFlags.Ephemeral,
+						});
+					}
 				}
 			}
 			if (command.vote && this.client.env.TOPGG) {

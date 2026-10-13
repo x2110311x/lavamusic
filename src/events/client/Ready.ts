@@ -33,6 +33,11 @@ export default class Ready extends Event {
 		} else {
 			logger.warn("Top.gg token not found. Skipping auto poster.");
 		}
+		if (env.GUILD_ID) {
+			await this.client.syncCommands(env.GUILD_ID).catch((err) => {
+				logger.error("Failed to auto-sync commands to GUILD_ID:", err);
+			});
+		}
 		await this.client.manager.init({ ...this.client.user!, shards: "auto" });
 	}
 }

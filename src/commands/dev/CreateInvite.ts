@@ -1,4 +1,4 @@
-import { ChannelType, type TextChannel } from "discord.js";
+import { ApplicationCommandOptionType, ChannelType, type TextChannel } from "discord.js";
 import { I18N } from "../../structures/I18n";
 import { Command, type Context, type Lavamusic } from "../../structures/index";
 import {
@@ -28,13 +28,34 @@ export default class CreateInvite extends Command {
 				client: [SendMessages, CreateInstantInvite, ReadMessageHistory, EmbedLinks, ViewChannel],
 				user: [],
 			},
-			slashCommand: false,
-			options: [],
+			slashCommand: true,
+			options: [
+				{
+					name: "guild",
+					description: I18N.dev.invite.create.options.guild,
+					type: ApplicationCommandOptionType.String,
+					required: true,
+				},
+			],
 		});
 	}
 
 	public async run(client: Lavamusic, ctx: Context, args: string[]): Promise<any> {
-		const guild = client.guilds.cache.get(args[0]);
+		const guildId =
+			(ctx.isInteraction ? (ctx.options.get("guild")?.value as string) : undefined) || args[0];
+
+		if (!guildId) {
+			return await ctx.sendMessage({
+				embeds: [
+					client
+						.embed()
+						.setColor(client.color.red)
+						.setDescription(ctx.locale(I18N.dev.invite.create.errors.guild_not_found)),
+				],
+			});
+		}
+
+		const guild = client.guilds.cache.get(guildId);
 
 		if (!guild) {
 			return await ctx.sendMessage({

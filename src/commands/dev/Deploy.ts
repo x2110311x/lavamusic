@@ -30,7 +30,7 @@ export default class Deploy extends Command {
 		super(client, {
 			name: "deploy",
 			description: {
-				content: `🔁 ${I18N.dev.deploy.description}`,
+				content: I18N.dev.deploy.description,
 				examples: ["deploy"],
 				usage: "deploy",
 			},
@@ -49,7 +49,7 @@ export default class Deploy extends Command {
 				client: [SendMessages, ReadMessageHistory, ViewChannel, EmbedLinks],
 				user: [],
 			},
-			slashCommand: false,
+			slashCommand: true,
 			options: [],
 		});
 	}
@@ -124,9 +124,13 @@ export default class Deploy extends Command {
 		});
 
 		collector.on("end", async (_collected, reason) => {
-			if (reason === "time" && msg) {
+			if (reason === "time") {
 				try {
-					await msg.delete();
+					if (ctx.isInteraction) {
+						await ctx.interaction?.deleteReply().catch(() => null);
+					} else if (msg) {
+						await msg.delete().catch(() => null);
+					}
 				} catch (error) {
 					logger.error("Failed to delete the message:", error);
 				}

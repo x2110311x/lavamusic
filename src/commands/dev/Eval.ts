@@ -1,5 +1,10 @@
 import util from "node:util";
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
+import {
+	ActionRowBuilder,
+	ApplicationCommandOptionType,
+	ButtonBuilder,
+	ButtonStyle,
+} from "discord.js";
 import { fetch } from "undici";
 import { env } from "../../env";
 import { I18N } from "../../structures/I18n";
@@ -30,13 +35,23 @@ export default class Eval extends Command {
 				client: [SendMessages, ReadMessageHistory, ViewChannel, EmbedLinks],
 				user: [],
 			},
-			slashCommand: false,
-			options: [],
+			slashCommand: true,
+			options: [
+				{
+					name: "code",
+					description: I18N.dev.eval.options.code,
+					type: ApplicationCommandOptionType.String,
+					required: true,
+				},
+			],
 		});
 	}
 
 	public async run(client: Lavamusic, ctx: Context, args: string[]): Promise<any> {
-		const code = args.join(" ");
+		const code =
+			(ctx.isInteraction ? (ctx.options.get("code")?.value as string) : undefined) ||
+			args.join(" ");
+		if (!code) return;
 		try {
 			// biome-ignore lint/security/noGlobalEval: explanation
 			let evaled = eval(code);
@@ -86,7 +101,11 @@ export default class Eval extends Command {
 
 			collector.on("collect", async (i) => {
 				await i.deferUpdate();
-				await msg.delete();
+				if (ctx.isInteraction) {
+					await ctx.interaction?.deleteReply().catch(() => null);
+				} else {
+					await msg.delete().catch(() => null);
+				}
 			});
 		} catch (e) {
 			await ctx.sendMessage(`\`\`\`js\n${e}\n\`\`\``);

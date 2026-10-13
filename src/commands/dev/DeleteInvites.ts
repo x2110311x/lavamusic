@@ -1,3 +1,4 @@
+import { ApplicationCommandOptionType } from "discord.js";
 import { I18N } from "../../structures/I18n";
 import { Command, type Context, type Lavamusic } from "../../structures/index";
 import {
@@ -26,13 +27,34 @@ export default class DestroyInvites extends Command {
 				client: [SendMessages, ManageGuild, ReadMessageHistory, ViewChannel],
 				user: [],
 			},
-			slashCommand: false,
-			options: [],
+			slashCommand: true,
+			options: [
+				{
+					name: "guild",
+					description: I18N.dev.invite.destroy.options.guild,
+					type: ApplicationCommandOptionType.String,
+					required: true,
+				},
+			],
 		});
 	}
 
 	public async run(client: Lavamusic, ctx: Context, args: string[]): Promise<any> {
-		const guild = client.guilds.cache.get(args[0]);
+		const guildId =
+			(ctx.isInteraction ? (ctx.options.get("guild")?.value as string) : undefined) || args[0];
+
+		if (!guildId) {
+			return await ctx.sendMessage({
+				embeds: [
+					client
+						.embed()
+						.setColor(client.color.red)
+						.setDescription(ctx.locale(I18N.dev.invite.destroy.errors.guild_not_found)),
+				],
+			});
+		}
+
+		const guild = client.guilds.cache.get(guildId);
 
 		if (!guild) {
 			return await ctx.sendMessage({

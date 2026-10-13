@@ -27,7 +27,7 @@ export default class Shutdown extends Command {
 				client: [SendMessages, ReadMessageHistory, ViewChannel, EmbedLinks],
 				user: [],
 			},
-			slashCommand: false,
+			slashCommand: true,
 			options: [],
 		});
 	}
@@ -58,7 +58,7 @@ export default class Shutdown extends Command {
 		collector.on("collect", async (i) => {
 			await i.deferUpdate();
 
-			await msg.edit({
+			await ctx.editMessage({
 				content: I18N.dev.shutdown.status,
 				embeds: [],
 				components: [],
@@ -70,7 +70,7 @@ export default class Shutdown extends Command {
 
 		collector.on("end", async () => {
 			if (collector.collected.size === 0) {
-				await msg.edit({
+				await ctx.editMessage({
 					content: I18N.dev.shutdown.canceled,
 					components: [],
 				});

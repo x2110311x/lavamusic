@@ -1,11 +1,17 @@
 {
   "eval": {
     "description": "Evaluate code",
+    "options": {
+      "code": "The JavaScript code to evaluate"
+    },
     "success": "Code evaluated successfully",
     "error": "Failed to evaluate code"
   },
   "guilds": {
     "description": "Manage and list bot guilds",
+    "options": {
+      "guild": "The guild ID to leave"
+    },
     "list": "List of Guilds",
     "leave": {
       "success": "Successfully left guild: {name}",
@@ -50,6 +56,9 @@
   "invite": {
     "create": {
       "description": "Create an invite link for a specific guild.",
+      "options": {
+        "guild": "The guild ID to create an invite for"
+      },
       "errors": {
         "guild_not_found": "Guild not found. Make sure the ID is correct.",
         "no_suitable_channel": "No suitable channel found with enough permissions to create an invite in that guild."
@@ -58,6 +67,9 @@
     },
     "destroy": {
       "description": "Destroy all invite links created by the bot in a guild",
+      "options": {
+        "guild": "The guild ID to destroy invites from"
+      },
       "errors": {
         "guild_not_found": "Guild not found. Please provide a valid ID.",
         "generic": "Failed to destroy invites. Check if I have 'Manage Server' permissions in that guild."
